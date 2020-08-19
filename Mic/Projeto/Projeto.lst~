@@ -1,0 +1,833 @@
+Projeto                                                                                                                 PAGE 1
+  00A0                   1             DADOS EQU P2
+  0085                   2             RS EQU P0.5
+  0086                   3             RW EQU P0.6
+  0087                   4             EN EQU P0.7
+                         5
+  001F                   6             bola equ 1fh
+                         7
+                         8             org 0000h
+0000 020050              9             jmp setdisplay
+                        10
+                        11             ORG 0003h
+0003 1203B6             12             call interrupcao
+0006 32                 13             reti
+                        14
+                        15             ORG 0013h
+0013 1203D0             16             call interrupcao_2
+0016 32                 17             RETI
+                        18
+                        19             ORG 001Bh
+001B C28E               20             clr tr1
+001D C28F               21             clr tf1
+001F 120415             22             call contagem
+0022 32                 23             reti
+                        24
+                        25             org 0050h
+                        26     ;*************** inicialização display **************
+                        27     setDisplay:
+                        28             rept 6
+                        29             call delay_5ms
+                        30 +1          endm
+0050 120504             31 +1                  call    delay_5ms
+0053 120504             32 +1                  call    delay_5ms
+0056 120504             33 +1                  call    delay_5ms
+0059 120504             34 +1                  call    delay_5ms
+005C 120504             35 +1                  call    delay_5ms
+005F 120504             36 +1                  call    delay_5ms
+0062 7F30               37             mov r7, #00110000b
+0064 1204A4             38             call cmd
+0067 120504             39             call delay_5ms
+006A 7F30               40             mov r7, #00110000b
+006C 1204A4             41             call cmd
+006F 120504             42             call delay_5ms
+0072 7F30               43             mov r7, #00110000b
+0074 1204A4             44             call cmd
+0077 120504             45             call delay_5ms
+007A 7F38               46             mov r7, #00111000b
+007C 1204A4             47             call cmd
+007F 120504             48             call delay_5ms
+0082 7F08               49             mov r7, #00001000b
+0084 1204A4             50             call cmd
+0087 120504             51             call delay_5ms
+008A 7F01               52             mov r7, #00000001b
+008C 1204A4             53             call cmd
+008F 120504             54             call delay_5ms
+0092 7F06               55             mov r7, #00000110b
+0094 1204A4             56             call cmd
+0097 120504             57             call delay_5ms
+009A 7F0F               58             mov r7, #00001111b              ;b seta o blinking
+009C 1204A4             59             call cmd
+009F 120504             60             call delay_5ms
+00A2 0200A5             61             jmp config
+                        62     ;**************** fim inicialização display *********************
+                        63     config:
+00A5 75A88D             64             mov ie, #10001101b
+00A8 901000             65             mov dptr, #1000h
+00AB 7921               66             mov r1, #21h
+                        67
+                        68     inicializacao:
+00AD 7F80               69             mov r7, #10000000b
+00AF 1204A4             70             call cmd
+00B2 7823               71             mov r0, #'#'
+                        72             rept 16
+                        73             call delay_40micro
+                        74             call envio
+                        75 +1          endm
+00B4 12052A             76 +1                  call    delay_40micro
+00B7 120487             77 +1                  call    envio
+00BA 12052A             78 +1                  call    delay_40micro
+00BD 120487             79 +1                  call    envio
+00C0 12052A             80 +1                  call    delay_40micro
+00C3 120487             81 +1                  call    envio
+00C6 12052A             82 +1                  call    delay_40micro
+00C9 120487             83 +1                  call    envio
+00CC 12052A             84 +1                  call    delay_40micro
+00CF 120487             85 +1                  call    envio
+00D2 12052A             86 +1                  call    delay_40micro
+00D5 120487             87 +1                  call    envio
+00D8 12052A             88 +1                  call    delay_40micro
+00DB 120487             89 +1                  call    envio
+00DE 12052A             90 +1                  call    delay_40micro
+00E1 120487             91 +1                  call    envio
+00E4 12052A             92 +1                  call    delay_40micro
+00E7 120487             93 +1                  call    envio
+00EA 12052A             94 +1                  call    delay_40micro
+00ED 120487             95 +1                  call    envio
+00F0 12052A             96 +1                  call    delay_40micro
+00F3 120487             97 +1                  call    envio
+00F6 12052A             98 +1                  call    delay_40micro
+00F9 120487             99 +1                  call    envio
+00FC 12052A            100 +1                  call    delay_40micro
+00FF 120487            101 +1                  call    envio
+0102 12052A            102 +1                  call    delay_40micro
+0105 120487            103 +1                  call    envio
+0108 12052A            104 +1                  call    delay_40micro
+010B 120487            105 +1                  call    envio
+010E 12052A            106 +1                  call    delay_40micro
+0111 120487            107 +1                  call    envio
+0114 7FC0              108             mov r7, #11000000b
+0116 1204A4            109             call cmd
+                       110             rept 16
+                       111             call delay_40micro
+                       112             call envio
+                       113 +1          endm
+0119 12052A            114 +1                  call    delay_40micro
+011C 120487            115 +1                  call    envio
+011F 12052A            116 +1                  call    delay_40micro
+0122 120487            117 +1                  call    envio
+0125 12052A            118 +1                  call    delay_40micro
+0128 120487            119 +1                  call    envio
+012B 12052A            120 +1                  call    delay_40micro
+012E 120487            121 +1                  call    envio
+0131 12052A            122 +1                  call    delay_40micro
+0134 120487            123 +1                  call    envio
+0137 12052A            124 +1                  call    delay_40micro
+013A 120487            125 +1                  call    envio
+013D 12052A            126 +1                  call    delay_40micro
+0140 120487            127 +1                  call    envio
+0143 12052A            128 +1                  call    delay_40micro
+0146 120487            129 +1                  call    envio
+0149 12052A            130 +1                  call    delay_40micro
+014C 120487            131 +1                  call    envio
+014F 12052A            132 +1                  call    delay_40micro
+0152 120487            133 +1                  call    envio
+0155 12052A            134 +1                  call    delay_40micro
+0158 120487            135 +1                  call    envio
+015B 12052A            136 +1                  call    delay_40micro
+015E 120487            137 +1                  call    envio
+0161 12052A            138 +1                  call    delay_40micro
+0164 120487            139 +1                  call    envio
+0167 12052A            140 +1                  call    delay_40micro
+016A 120487            141 +1                  call    envio
+016D 12052A            142 +1                  call    delay_40micro
+0170 120487            143 +1                  call    envio
+0173 12052A            144 +1                  call    delay_40micro
+0176 120487            145 +1                  call    envio
+                       146             rept 150
+                       147             call delay_5ms
+                       148 +1          endm
+0179 120504            149 +1                  call    delay_5ms
+017C 120504            150 +1                  call    delay_5ms
+017F 120504            151 +1                  call    delay_5ms
+0182 120504            152 +1                  call    delay_5ms
+0185 120504            153 +1                  call    delay_5ms
+0188 120504            154 +1                  call    delay_5ms
+018B 120504            155 +1                  call    delay_5ms
+018E 120504            156 +1                  call    delay_5ms
+0191 120504            157 +1                  call    delay_5ms
+0194 120504            158 +1                  call    delay_5ms
+0197 120504            159 +1                  call    delay_5ms
+019A 120504            160 +1                  call    delay_5ms
+019D 120504            161 +1                  call    delay_5ms
+01A0 120504            162 +1                  call    delay_5ms
+01A3 120504            163 +1                  call    delay_5ms
+01A6 120504            164 +1                  call    delay_5ms
+01A9 120504            165 +1                  call    delay_5ms
+01AC 120504            166 +1                  call    delay_5ms
+01AF 120504            167 +1                  call    delay_5ms
+01B2 120504            168 +1                  call    delay_5ms
+01B5 120504            169 +1                  call    delay_5ms
+01B8 120504            170 +1                  call    delay_5ms
+01BB 120504            171 +1                  call    delay_5ms
+01BE 120504            172 +1                  call    delay_5ms
+01C1 120504            173 +1                  call    delay_5ms
+01C4 120504            174 +1                  call    delay_5ms
+01C7 120504            175 +1                  call    delay_5ms
+01CA 120504            176 +1                  call    delay_5ms
+01CD 120504            177 +1                  call    delay_5ms
+01D0 120504            178 +1                  call    delay_5ms
+01D3 120504            179 +1                  call    delay_5ms
+01D6 120504            180 +1                  call    delay_5ms
+01D9 120504            181 +1                  call    delay_5ms
+01DC 120504            182 +1                  call    delay_5ms
+01DF 120504            183 +1                  call    delay_5ms
+01E2 120504            184 +1                  call    delay_5ms
+01E5 120504            185 +1                  call    delay_5ms
+01E8 120504            186 +1                  call    delay_5ms
+01EB 120504            187 +1                  call    delay_5ms
+01EE 120504            188 +1                  call    delay_5ms
+01F1 120504            189 +1                  call    delay_5ms
+01F4 120504            190 +1                  call    delay_5ms
+01F7 120504            191 +1                  call    delay_5ms
+01FA 120504            192 +1                  call    delay_5ms
+01FD 120504            193 +1                  call    delay_5ms
+0200 120504            194 +1                  call    delay_5ms
+0203 120504            195 +1                  call    delay_5ms
+0206 120504            196 +1                  call    delay_5ms
+0209 120504            197 +1                  call    delay_5ms
+020C 120504            198 +1                  call    delay_5ms
+020F 120504            199 +1                  call    delay_5ms
+0212 120504            200 +1                  call    delay_5ms
+0215 120504            201 +1                  call    delay_5ms
+0218 120504            202 +1                  call    delay_5ms
+021B 120504            203 +1                  call    delay_5ms
+021E 120504            204 +1                  call    delay_5ms
+0221 120504            205 +1                  call    delay_5ms
+0224 120504            206 +1                  call    delay_5ms
+0227 120504            207 +1                  call    delay_5ms
+022A 120504            208 +1                  call    delay_5ms
+022D 120504            209 +1                  call    delay_5ms
+0230 120504            210 +1                  call    delay_5ms
+0233 120504            211 +1                  call    delay_5ms
+0236 120504            212 +1                  call    delay_5ms
+0239 120504            213 +1                  call    delay_5ms
+023C 120504            214 +1                  call    delay_5ms
+023F 120504            215 +1                  call    delay_5ms
+0242 120504            216 +1                  call    delay_5ms
+0245 120504            217 +1                  call    delay_5ms
+0248 120504            218 +1                  call    delay_5ms
+024B 120504            219 +1                  call    delay_5ms
+024E 120504            220 +1                  call    delay_5ms
+0251 120504            221 +1                  call    delay_5ms
+0254 120504            222 +1                  call    delay_5ms
+0257 120504            223 +1                  call    delay_5ms
+025A 120504            224 +1                  call    delay_5ms
+025D 120504            225 +1                  call    delay_5ms
+0260 120504            226 +1                  call    delay_5ms
+0263 120504            227 +1                  call    delay_5ms
+0266 120504            228 +1                  call    delay_5ms
+0269 120504            229 +1                  call    delay_5ms
+026C 120504            230 +1                  call    delay_5ms
+026F 120504            231 +1                  call    delay_5ms
+0272 120504            232 +1                  call    delay_5ms
+0275 120504            233 +1                  call    delay_5ms
+0278 120504            234 +1                  call    delay_5ms
+027B 120504            235 +1                  call    delay_5ms
+027E 120504            236 +1                  call    delay_5ms
+0281 120504            237 +1                  call    delay_5ms
+0284 120504            238 +1                  call    delay_5ms
+0287 120504            239 +1                  call    delay_5ms
+028A 120504            240 +1                  call    delay_5ms
+028D 120504            241 +1                  call    delay_5ms
+0290 120504            242 +1                  call    delay_5ms
+0293 120504            243 +1                  call    delay_5ms
+0296 120504            244 +1                  call    delay_5ms
+0299 120504            245 +1                  call    delay_5ms
+029C 120504            246 +1                  call    delay_5ms
+029F 120504            247 +1                  call    delay_5ms
+02A2 120504            248 +1                  call    delay_5ms
+02A5 120504            249 +1                  call    delay_5ms
+02A8 120504            250 +1                  call    delay_5ms
+02AB 120504            251 +1                  call    delay_5ms
+02AE 120504            252 +1                  call    delay_5ms
+02B1 120504            253 +1                  call    delay_5ms
+02B4 120504            254 +1                  call    delay_5ms
+02B7 120504            255 +1                  call    delay_5ms
+02BA 120504            256 +1                  call    delay_5ms
+02BD 120504            257 +1                  call    delay_5ms
+02C0 120504            258 +1                  call    delay_5ms
+02C3 120504            259 +1                  call    delay_5ms
+02C6 120504            260 +1                  call    delay_5ms
+02C9 120504            261 +1                  call    delay_5ms
+02CC 120504            262 +1                  call    delay_5ms
+02CF 120504            263 +1                  call    delay_5ms
+02D2 120504            264 +1                  call    delay_5ms
+02D5 120504            265 +1                  call    delay_5ms
+02D8 120504            266 +1                  call    delay_5ms
+02DB 120504            267 +1                  call    delay_5ms
+02DE 120504            268 +1                  call    delay_5ms
+02E1 120504            269 +1                  call    delay_5ms
+02E4 120504            270 +1                  call    delay_5ms
+02E7 120504            271 +1                  call    delay_5ms
+02EA 120504            272 +1                  call    delay_5ms
+02ED 120504            273 +1                  call    delay_5ms
+02F0 120504            274 +1                  call    delay_5ms
+02F3 120504            275 +1                  call    delay_5ms
+02F6 120504            276 +1                  call    delay_5ms
+02F9 120504            277 +1                  call    delay_5ms
+02FC 120504            278 +1                  call    delay_5ms
+02FF 120504            279 +1                  call    delay_5ms
+0302 120504            280 +1                  call    delay_5ms
+0305 120504            281 +1                  call    delay_5ms
+0308 120504            282 +1                  call    delay_5ms
+030B 120504            283 +1                  call    delay_5ms
+030E 120504            284 +1                  call    delay_5ms
+0311 120504            285 +1                  call    delay_5ms
+0314 120504            286 +1                  call    delay_5ms
+0317 120504            287 +1                  call    delay_5ms
+031A 120504            288 +1                  call    delay_5ms
+031D 120504            289 +1                  call    delay_5ms
+0320 120504            290 +1                  call    delay_5ms
+0323 120504            291 +1                  call    delay_5ms
+0326 120504            292 +1                  call    delay_5ms
+0329 120504            293 +1                  call    delay_5ms
+032C 120504            294 +1                  call    delay_5ms
+032F 120504            295 +1                  call    delay_5ms
+0332 120504            296 +1                  call    delay_5ms
+0335 120504            297 +1                  call    delay_5ms
+0338 120504            298 +1                  call    delay_5ms
+033B 120495            299             call clear
+                       300     zero:
+033E 7854              301             mov r0, #'T'
+0340 7E30              302             mov r6, #00110000b
+0342 7A30              303             mov r2, #00110000b
+0344 7B30              304             mov r3, #00110000b
+0346 7C30              305             mov r4, #00110000b
+0348 7F81              306             mov r7, #10000001b
+034A 1204A4            307             call cmd
+034D 120487            308             call envio
+0350 120487            309             call envio
+0353 7849              310             mov r0, #'I'
+0355 120487            311             call envio
+0358 784D              312             mov r0, #'M'
+035A 120487            313             call envio
+035D 7845              314             mov r0, #'E'
+035F 120487            315             call envio
+0362 7852              316             mov r0, #'R'
+0364 120487            317             call envio
+0367 783D              318             mov r0, #'='
+0369 120487            319             call envio
+036C 7830              320             mov r0, #00110000b
+036E 120487            321             call envio
+0371 120487            322             call envio
+0374 783A              323             mov r0, #':'
+0376 120487            324             call envio
+0379 7830              325             mov r0, #00110000b
+037B 120487            326             call envio
+037E 120487            327             call envio
+0381 7FC0              328             mov r7, #11000000b
+0383 1204A4            329             call cmd
+0386 7853              330             mov r0, #'S'
+0388 120487            331             call envio
+038B 784F              332             mov r0, #'O'
+038D 120487            333             call envio
+0390 7852              334             mov r0, #'R'
+0392 120487            335             call envio
+0395 7854              336             mov r0, #'T'
+0397 120487            337             call envio
+039A 7845              338             mov r0, #'E'
+039C 120487            339             call envio
+039F 7849              340             mov r0, #'I'
+03A1 120487            341             call envio
+03A4 784F              342             mov r0, #'O'
+03A6 120487            343             call envio
+03A9 783D              344             mov r0, #'='
+03AB 120487            345             call envio
+                       346
+03AE 0203B1            347             jmp init
+                       348     ;******************************************inicio de contagem**********
+                       349     init:
+03B1 1204B5            350             call delay_1s
+03B4 80FB              351             jmp init
+                       352
+                       353     ;****************************************fim***************************
+                       354     interrupcao:
+03B6 E4                355             clr a
+03B7 93                356             movc a, @a+DPTR
+03B8 F7                357             mov @r1, a
+03B9 09                358             inc r1
+03BA A3                359             inc dptr
+03BB 1203ED            360             call sorteio_dezena
+03BE 120402            361             call sorteio_unidade
+03C1 120517            362             call delay_50ms
+03C4 120517            363             call delay_50ms
+03C7 120517            364             call delay_50ms
+03CA 120517            365             call delay_50ms
+03CD 051F              366             inc bola
+03CF 22                367             ret
+                       368
+                       369     interrupcao_2:
+03D0 C2CA              370             clr tr2
+03D2 C28E              371             clr tr1
+03D4 75A800            372             mov ie, #00000000b
+03D7 7921              373             mov r1, #21h
+03D9 E7                374             mov a, @r1
+                       375
+                       376     repeticao:
+                       377
+03DA B51F02            378             cjne a, bola, imprimir
+03DD 80FE              379             jmp $
+                       380
+                       381     imprimir:
+03DF E9                382             mov a, r1
+03E0 1203ED            383             call sorteio_dezena
+03E3 120402            384             call sorteio_unidade
+03E6 07                385             inc @r1
+03E7 E9                386             mov a, r1
+03E8 1204B5            387             call delay_1s
+03EB 80ED              388             jmp repeticao
+                       389
+                       390     sorteio_dezena:
+03ED F5F0              391             mov b, a
+03EF C2F7              392             clr b.7
+03F1 C2F6              393             clr b.6
+03F3 D2F5              394             setb b.5
+03F5 D2F4              395             setb b.4
+03F7 A8F0              396             mov r0, b
+03F9 7FC9              397             mov r7, #11001001b
+03FB 1204A4            398             call cmd
+03FE 120487            399             call envio
+0401 22                400             ret
+                       401
+                       402     sorteio_unidade:
+0402 C4                403             swap a
+0403 C2E7              404             clr a.7
+0405 C2E6              405             clr a.6
+0407 D2E5              406             setb a.5
+0409 D2E4              407             setb a.4
+040B F8                408             mov r0, a
+040C 7FC8              409             mov r7, #11001000b
+040E 1204A4            410             call cmd
+0411 120487            411             call envio
+0414 22                412             ret
+                       413
+                       414
+                       415     contagem:
+0415 0E                416             inc r6
+0416 BE3A04            417             cjne r6, #00111010b, conta_segundos
+0419 120428            418             call decimal
+041C 22                419             ret
+                       420
+                       421     conta_segundos:
+041D 7F8A              422             mov r7, #10001010b
+041F 1204A4            423             call cmd
+0422 EE                424             mov a, r6
+0423 F8                425             mov r0, a
+0424 120487            426             call envio
+0427 22                427             ret
+                       428
+                       429     decimal:
+0428 0A                430             inc r2
+0429 7E30              431             mov r6, #00110000b
+042B 7F8A              432             mov r7, #10001010b
+042D 1204A4            433             call cmd
+0430 EE                434             mov a, r6
+0431 F8                435             mov r0, a
+0432 120487            436             call envio
+0435 BA3609            437             cjne r2, #00110110b, setR2
+0438 120451            438             call minutos_0
+043B 7F8B              439             mov r7, #10001011b
+043D 1204A4            440             call cmd
+0440 22                441             ret
+                       442
+                       443     setR2:
+0441 7F89              444             mov r7, #10001001b
+0443 1204A4            445             call cmd
+0446 EA                446             mov a, r2
+0447 F8                447             mov r0, a
+0448 120487            448             call envio
+044B 7F8B              449             mov r7, #10001011b
+044D 1204A4            450             call cmd
+0450 22                451             ret
+                       452
+                       453     minutos_0:
+0451 0B                454             inc r3
+0452 7A30              455             mov r2, #00110000b
+0454 9141              456             call setr2
+0456 BB3A09            457             cjne r3, #00111010b, setR3
+0459 120472            458             call minutos_1
+045C 7F8B              459             mov r7, #10001011b
+045E 1204A4            460             call cmd
+0461 22                461             ret
+                       462
+                       463     setR3:
+0462 7F87              464             mov r7, #10000111b
+0464 1204A4            465             call cmd
+0467 EB                466             mov a, r3
+0468 F8                467             mov r0, a
+0469 120487            468             call envio
+046C 7F8B              469             mov r7, #10001011b
+046E 1204A4            470             call cmd
+0471 22                471             ret
+                       472
+                       473     minutos_1:
+0472 0C                474             inc r4
+0473 7B30              475             mov r3, #00110000b
+0475 7F86              476             mov r7, #10000110b
+0477 1204A4            477             call cmd
+047A EC                478             mov a, r4
+047B F8                479             mov r0, a
+047C 120487            480             call envio
+047F 9162              481             call setr3
+0481 7F8B              482             mov r7, #10001011b
+0483 1204A4            483             call cmd
+0486 22                484             ret
+                       485
+                       486     envio:
+0487 D287              487             setb en
+0489 D285              488             setb rs
+048B C286              489             clr rw
+048D 88A0              490             mov dados, r0
+048F C287              491             clr en
+0491 120504            492             call delay_5ms
+0494 22                493             ret
+                       494
+                       495     clear:
+0495 C285              496             clr rs
+0497 C286              497             clr rw
+0499 D287              498             setb en
+049B 75A001            499             mov dados, #00000001b
+049E 120504            500             call delay_5ms
+04A1 C287              501             clr en
+04A3 22                502             ret
+                       503
+                       504     cmd:
+04A4 D287              505             setb en
+04A6 C285              506             clr rs
+04A8 C286              507             clr rw
+04AA 8FA0              508             mov dados, r7
+04AC C287              509             clr en
+04AE 12052A            510             call delay_40micro
+04B1 12052A            511             call delay_40micro
+04B4 22                512             ret
+                       513
+                       514     delay_1s:
+                       515             rept 16
+                       516             call delay_timer2_995ms
+                       517 +1          endm
+04B5 1204F4            518 +1                  call    delay_timer2_995ms
+04B8 1204F4            519 +1                  call    delay_timer2_995ms
+04BB 1204F4            520 +1                  call    delay_timer2_995ms
+04BE 1204F4            521 +1                  call    delay_timer2_995ms
+04C1 1204F4            522 +1                  call    delay_timer2_995ms
+04C4 1204F4            523 +1                  call    delay_timer2_995ms
+04C7 1204F4            524 +1                  call    delay_timer2_995ms
+04CA 1204F4            525 +1                  call    delay_timer2_995ms
+04CD 1204F4            526 +1                  call    delay_timer2_995ms
+04D0 1204F4            527 +1                  call    delay_timer2_995ms
+04D3 1204F4            528 +1                  call    delay_timer2_995ms
+04D6 1204F4            529 +1                  call    delay_timer2_995ms
+04D9 1204F4            530 +1                  call    delay_timer2_995ms
+04DC 1204F4            531 +1                  call    delay_timer2_995ms
+04DF 1204F4            532 +1                  call    delay_timer2_995ms
+04E2 1204F4            533 +1                  call    delay_timer2_995ms
+04E5 758910            534             mov tmod, #00010000b
+04E8 758DFC            535             mov th1, #0FCh
+04EB 758B18            536             mov tl1, #018h
+04EE D28E              537             setb tr1
+04F0 308FFD            538             jnb tf1, $
+04F3 22                539             ret
+                       540
+                       541     delay_timer2_995ms:
+04F4 75CD2E            542             mov th2, #02eh
+04F7 75CCB8            543             mov tl2, #0b8h
+04FA D2CA              544             setb tr2
+04FC 30CFFD            545             jnb tf2, $
+04FF C2CF              546             clr tf2
+0501 C2CA              547             clr tr2
+0503 22                548             ret
+                       549
+                       550     delay_5ms:
+0504 758901            551             mov tmod, #00000001b
+0507 758CEC            552             mov th0, #0ECh
+050A 758A78            553             mov tl0, #078h
+050D D28C              554             setb tr0
+050F 308DFD            555             jnb tf0, $              ;LOOP AGUARDANDO FLAG "ESTOURAR"
+0512 C28C              556             clr tr0                 ;DESLIGA O TIME
+0514 C28D              557             clr tf0
+0516 22                558             ret
+                       559
+                       560     delay_50ms:
+0517 758901            561             mov tmod, #00000001b
+051A 758C3C            562             mov th0, #03Ch
+051D 758AB0            563             mov tl0, #0B0h
+0520 D28C              564             setb tr0
+0522 308DFD            565             jnb tf0, $              ;LOOP AGUARDANDO FLAG "ESTOURAR"
+0525 C28C              566             clr tr0                 ;DESLIGA O TIME
+0527 C28D              567             clr tf0
+0529 22                568             ret
+                       569
+                       570     delay_40micro: ;mudar o timer
+052A 758901            571             mov tmod, #00000001b
+052D 758CFF            572             mov th0, #0FFh
+0530 758AD8            573             mov tl0, #0D8h
+0533 D28C              574             setb tr0
+0535 308DFD            575             jnb tf0, $              ;LOOP AGUARDANDO FLAG "ESTOURAR"
+0538 C28C              576             clr tr0                 ;DESLIGA O TIME
+053A C28D              577             clr tf0
+053C 22                578             ret
+                       579
+                       580
+                       581             ORG 1000h
+                       582
+1000 24                583             DB 24h
+1001 07                584             DB 07h
+1002 31                585             DB 31h
+1003 21                586             DB 21h
+1004 78                587             DB 78h
+1005 83                588             DB 83h
+1006 49                589             DB 49h
+1007 18                590             DB 18h
+1008 46                591             DB 46h
+1009 35                592             DB 35h
+100A 62                593             DB 62h
+100B 56                594             DB 56h
+100C 81                595             DB 81h
+100D 55                596             DB 55h
+100E 72                597             DB 72h
+100F 06                598             DB 06h
+1010 57                599             DB 57h
+1011 68                600             DB 68h
+1012 94                601             DB 94h
+1013 04                602             DB 04h
+1014 34                603             DB 34h
+1015 17                604             DB 17h
+1016 61                605             DB 61h
+1017 69                606             DB 69h
+1018 48                607             DB 48h
+1019 87                608             DB 87h
+101A 79                609             DB 79h
+101B 96                610             DB 96h
+101C 30                611             DB 30h
+101D 99                612             DB 99h
+101E 28                613             DB 28h
+101F 02                614             DB 02h
+1020 36                615             DB 36h
+                       616
+                       617     end
+ASSEMBLY COMPLETE, NO ERRORS FOUND, NO WARNINGS
+
+
+SYMBOL TABLE:
+??MCU_8051_IDE . . . . . . . . . . .  N  NUMB  8051H  NOT USED
+??VERSION. . . . . . . . . . . . . .  N  NUMB  0147H  NOT USED
+AC . . . . . . . . . . . . . . . . .  B  ADDR  00D6H  NOT USED
+ACC. . . . . . . . . . . . . . . . .  D  ADDR  00E0H  NOT USED
+ACSR . . . . . . . . . . . . . . . .  D  ADDR  0097H  NOT USED
+ADCF . . . . . . . . . . . . . . . .  D  ADDR  00F6H  NOT USED
+ADCLK. . . . . . . . . . . . . . . .  D  ADDR  00F2H  NOT USED
+ADCON. . . . . . . . . . . . . . . .  D  ADDR  00F3H  NOT USED
+ADDH . . . . . . . . . . . . . . . .  D  ADDR  00F5H  NOT USED
+ADDL . . . . . . . . . . . . . . . .  D  ADDR  00F4H  NOT USED
+AUXR . . . . . . . . . . . . . . . .  D  ADDR  008EH  NOT USED
+AUXR1. . . . . . . . . . . . . . . .  D  ADDR  00A2H  NOT USED
+B. . . . . . . . . . . . . . . . . .  D  ADDR  00F0H
+BDRCON . . . . . . . . . . . . . . .  D  ADDR  009BH  NOT USED
+BDRCON_1 . . . . . . . . . . . . . .  D  ADDR  009CH  NOT USED
+BOLA . . . . . . . . . . . . . . . .  N  NUMB  001FH
+BRL. . . . . . . . . . . . . . . . .  D  ADDR  009AH  NOT USED
+CCAP0H . . . . . . . . . . . . . . .  D  ADDR  00FAH  NOT USED
+CCAP0L . . . . . . . . . . . . . . .  D  ADDR  00EAH  NOT USED
+CCAP1H . . . . . . . . . . . . . . .  D  ADDR  00FBH  NOT USED
+CCAP1L . . . . . . . . . . . . . . .  D  ADDR  00EBH  NOT USED
+CCAP2H . . . . . . . . . . . . . . .  D  ADDR  00FCH  NOT USED
+CCAP3H . . . . . . . . . . . . . . .  D  ADDR  00FDH  NOT USED
+CCAP4H . . . . . . . . . . . . . . .  D  ADDR  00FEH  NOT USED
+CCAPL2H. . . . . . . . . . . . . . .  D  ADDR  00FCH  NOT USED
+CCAPL2L. . . . . . . . . . . . . . .  D  ADDR  00ECH  NOT USED
+CCAPL3H. . . . . . . . . . . . . . .  D  ADDR  00FDH  NOT USED
+CCAPL3L. . . . . . . . . . . . . . .  D  ADDR  00EDH  NOT USED
+CCAPL4H. . . . . . . . . . . . . . .  D  ADDR  00FEH  NOT USED
+CCAPL4L. . . . . . . . . . . . . . .  D  ADDR  00EEH  NOT USED
+CCAPM0 . . . . . . . . . . . . . . .  D  ADDR  00DAH  NOT USED
+CCAPM1 . . . . . . . . . . . . . . .  D  ADDR  00DBH  NOT USED
+CCAPM2 . . . . . . . . . . . . . . .  D  ADDR  00DCH  NOT USED
+CCAPM3 . . . . . . . . . . . . . . .  D  ADDR  00DDH  NOT USED
+CCAPM4 . . . . . . . . . . . . . . .  D  ADDR  00DEH  NOT USED
+CCF0 . . . . . . . . . . . . . . . .  B  ADDR  00D8H  NOT USED
+CCF1 . . . . . . . . . . . . . . . .  B  ADDR  00D9H  NOT USED
+CCF2 . . . . . . . . . . . . . . . .  B  ADDR  00DAH  NOT USED
+CCF3 . . . . . . . . . . . . . . . .  B  ADDR  00DBH  NOT USED
+CCF4 . . . . . . . . . . . . . . . .  B  ADDR  00DCH  NOT USED
+CCON . . . . . . . . . . . . . . . .  D  ADDR  00D8H  NOT USED
+CFINT. . . . . . . . . . . . . . . .  C  ADDR  0033H  NOT USED
+CH . . . . . . . . . . . . . . . . .  D  ADDR  00F9H  NOT USED
+CKCON. . . . . . . . . . . . . . . .  D  ADDR  008FH  NOT USED
+CKCON0 . . . . . . . . . . . . . . .  D  ADDR  008FH  NOT USED
+CKRL . . . . . . . . . . . . . . . .  D  ADDR  0097H  NOT USED
+CKSEL. . . . . . . . . . . . . . . .  D  ADDR  0085H  NOT USED
+CL . . . . . . . . . . . . . . . . .  D  ADDR  00E9H  NOT USED
+CLEAR. . . . . . . . . . . . . . . .  C  ADDR  0495H
+CLKREG . . . . . . . . . . . . . . .  D  ADDR  008FH  NOT USED
+CMD. . . . . . . . . . . . . . . . .  C  ADDR  04A4H
+CMOD . . . . . . . . . . . . . . . .  D  ADDR  00D9H  NOT USED
+CONFIG . . . . . . . . . . . . . . .  C  ADDR  00A5H
+CONTAGEM . . . . . . . . . . . . . .  C  ADDR  0415H
+CONTA_SEGUNDOS . . . . . . . . . . .  C  ADDR  041DH
+CPRL2. . . . . . . . . . . . . . . .  B  ADDR  00C8H  NOT USED
+CR . . . . . . . . . . . . . . . . .  B  ADDR  00DEH  NOT USED
+CT2. . . . . . . . . . . . . . . . .  B  ADDR  00C9H  NOT USED
+CY . . . . . . . . . . . . . . . . .  B  ADDR  00D7H  NOT USED
+DADOS. . . . . . . . . . . . . . . .  N  NUMB  00A0H
+DECIMAL. . . . . . . . . . . . . . .  C  ADDR  0428H
+DELAY_1S . . . . . . . . . . . . . .  C  ADDR  04B5H
+DELAY_40MICRO. . . . . . . . . . . .  C  ADDR  052AH
+DELAY_50MS . . . . . . . . . . . . .  C  ADDR  0517H
+DELAY_5MS. . . . . . . . . . . . . .  C  ADDR  0504H
+DELAY_TIMER2_995MS . . . . . . . . .  C  ADDR  04F4H
+DP0H . . . . . . . . . . . . . . . .  D  ADDR  0083H  NOT USED
+DP0L . . . . . . . . . . . . . . . .  D  ADDR  0082H  NOT USED
+DP1H . . . . . . . . . . . . . . . .  D  ADDR  0085H  NOT USED
+DP1L . . . . . . . . . . . . . . . .  D  ADDR  0084H  NOT USED
+DPH. . . . . . . . . . . . . . . . .  D  ADDR  0083H  NOT USED
+DPL. . . . . . . . . . . . . . . . .  D  ADDR  0082H  NOT USED
+EA . . . . . . . . . . . . . . . . .  B  ADDR  00AFH  NOT USED
+EC . . . . . . . . . . . . . . . . .  B  ADDR  00AEH  NOT USED
+EECON. . . . . . . . . . . . . . . .  D  ADDR  0096H  NOT USED
+EN . . . . . . . . . . . . . . . . .  N  NUMB  0087H
+ENVIO. . . . . . . . . . . . . . . .  C  ADDR  0487H
+ES . . . . . . . . . . . . . . . . .  B  ADDR  00ACH  NOT USED
+ET0. . . . . . . . . . . . . . . . .  B  ADDR  00A9H  NOT USED
+ET1. . . . . . . . . . . . . . . . .  B  ADDR  00ABH  NOT USED
+ET2. . . . . . . . . . . . . . . . .  B  ADDR  00ADH  NOT USED
+EX0. . . . . . . . . . . . . . . . .  B  ADDR  00A8H  NOT USED
+EX1. . . . . . . . . . . . . . . . .  B  ADDR  00AAH  NOT USED
+EXEN2. . . . . . . . . . . . . . . .  B  ADDR  00CBH  NOT USED
+EXF2 . . . . . . . . . . . . . . . .  B  ADDR  00CEH  NOT USED
+EXTI0. . . . . . . . . . . . . . . .  C  ADDR  0003H  NOT USED
+EXTI1. . . . . . . . . . . . . . . .  C  ADDR  0013H  NOT USED
+F0 . . . . . . . . . . . . . . . . .  B  ADDR  00D5H  NOT USED
+FE . . . . . . . . . . . . . . . . .  B  ADDR  009FH  NOT USED
+IE . . . . . . . . . . . . . . . . .  D  ADDR  00A8H
+IE0. . . . . . . . . . . . . . . . .  B  ADDR  0089H  NOT USED
+IE1. . . . . . . . . . . . . . . . .  B  ADDR  008BH  NOT USED
+IMPRIMIR . . . . . . . . . . . . . .  C  ADDR  03DFH
+INICIALIZACAO. . . . . . . . . . . .  C  ADDR  00ADH  NOT USED
+INIT . . . . . . . . . . . . . . . .  C  ADDR  03B1H
+INT0 . . . . . . . . . . . . . . . .  B  ADDR  00B2H  NOT USED
+INT1 . . . . . . . . . . . . . . . .  B  ADDR  00B3H  NOT USED
+INTERRUPCAO. . . . . . . . . . . . .  C  ADDR  03B6H
+INTERRUPCAO_2. . . . . . . . . . . .  C  ADDR  03D0H
+IP . . . . . . . . . . . . . . . . .  D  ADDR  00B8H  NOT USED
+IPH. . . . . . . . . . . . . . . . .  D  ADDR  00B7H  NOT USED
+IPH0 . . . . . . . . . . . . . . . .  D  ADDR  00B7H  NOT USED
+IPH1 . . . . . . . . . . . . . . . .  D  ADDR  00B3H  NOT USED
+IPL0 . . . . . . . . . . . . . . . .  D  ADDR  00B8H  NOT USED
+IPL1 . . . . . . . . . . . . . . . .  D  ADDR  00B2H  NOT USED
+IT0. . . . . . . . . . . . . . . . .  B  ADDR  0088H  NOT USED
+IT1. . . . . . . . . . . . . . . . .  B  ADDR  008AH  NOT USED
+KBE. . . . . . . . . . . . . . . . .  D  ADDR  009DH  NOT USED
+KBF. . . . . . . . . . . . . . . . .  D  ADDR  009EH  NOT USED
+KBLS . . . . . . . . . . . . . . . .  D  ADDR  009CH  NOT USED
+MINUTOS_0. . . . . . . . . . . . . .  C  ADDR  0451H
+MINUTOS_1. . . . . . . . . . . . . .  C  ADDR  0472H
+OSCCON . . . . . . . . . . . . . . .  D  ADDR  0086H  NOT USED
+OV . . . . . . . . . . . . . . . . .  B  ADDR  00D2H  NOT USED
+P. . . . . . . . . . . . . . . . . .  B  ADDR  00D0H  NOT USED
+P0 . . . . . . . . . . . . . . . . .  D  ADDR  0080H  NOT USED
+P1 . . . . . . . . . . . . . . . . .  D  ADDR  0090H  NOT USED
+P1M1 . . . . . . . . . . . . . . . .  D  ADDR  00D4H  NOT USED
+P1M2 . . . . . . . . . . . . . . . .  D  ADDR  00E2H  NOT USED
+P2 . . . . . . . . . . . . . . . . .  D  ADDR  00A0H  NOT USED
+P3 . . . . . . . . . . . . . . . . .  D  ADDR  00B0H  NOT USED
+P3M1 . . . . . . . . . . . . . . . .  D  ADDR  00D5H  NOT USED
+P3M2 . . . . . . . . . . . . . . . .  D  ADDR  00E3H  NOT USED
+P4 . . . . . . . . . . . . . . . . .  D  ADDR  00C0H  NOT USED
+P4M1 . . . . . . . . . . . . . . . .  D  ADDR  00D6H  NOT USED
+P4M2 . . . . . . . . . . . . . . . .  D  ADDR  00E4H  NOT USED
+P5 . . . . . . . . . . . . . . . . .  D  ADDR  00E8H  NOT USED
+PC . . . . . . . . . . . . . . . . .  B  ADDR  00BEH  NOT USED
+PCON . . . . . . . . . . . . . . . .  D  ADDR  0087H  NOT USED
+PPCL . . . . . . . . . . . . . . . .  B  ADDR  00BEH  NOT USED
+PS . . . . . . . . . . . . . . . . .  B  ADDR  00BCH  NOT USED
+PSL. . . . . . . . . . . . . . . . .  B  ADDR  00BCH  NOT USED
+PSW. . . . . . . . . . . . . . . . .  D  ADDR  00D0H  NOT USED
+PT0. . . . . . . . . . . . . . . . .  B  ADDR  00B9H  NOT USED
+PT0L . . . . . . . . . . . . . . . .  B  ADDR  00B9H  NOT USED
+PT1. . . . . . . . . . . . . . . . .  B  ADDR  00BBH  NOT USED
+PT1L . . . . . . . . . . . . . . . .  B  ADDR  00BBH  NOT USED
+PT2. . . . . . . . . . . . . . . . .  B  ADDR  00BDH  NOT USED
+PT2L . . . . . . . . . . . . . . . .  B  ADDR  00BDH  NOT USED
+PX0. . . . . . . . . . . . . . . . .  B  ADDR  00B8H  NOT USED
+PX0L . . . . . . . . . . . . . . . .  B  ADDR  00B8H  NOT USED
+PX1. . . . . . . . . . . . . . . . .  B  ADDR  00BAH  NOT USED
+PX1L . . . . . . . . . . . . . . . .  B  ADDR  00BAH  NOT USED
+RB8. . . . . . . . . . . . . . . . .  B  ADDR  009AH  NOT USED
+RCAP2H . . . . . . . . . . . . . . .  D  ADDR  00CBH  NOT USED
+RCAP2L . . . . . . . . . . . . . . .  D  ADDR  00CAH  NOT USED
+RCLK . . . . . . . . . . . . . . . .  B  ADDR  00CDH  NOT USED
+RD . . . . . . . . . . . . . . . . .  B  ADDR  00B7H  NOT USED
+REN. . . . . . . . . . . . . . . . .  B  ADDR  009CH  NOT USED
+REPETICAO. . . . . . . . . . . . . .  C  ADDR  03DAH
+RESET. . . . . . . . . . . . . . . .  C  ADDR  0000H  NOT USED
+RI . . . . . . . . . . . . . . . . .  B  ADDR  0098H  NOT USED
+RS . . . . . . . . . . . . . . . . .  N  NUMB  0085H
+RS0. . . . . . . . . . . . . . . . .  B  ADDR  00D3H  NOT USED
+RS1. . . . . . . . . . . . . . . . .  B  ADDR  00D4H  NOT USED
+RW . . . . . . . . . . . . . . . . .  N  NUMB  0086H
+RXD. . . . . . . . . . . . . . . . .  B  ADDR  00B0H  NOT USED
+SADDR. . . . . . . . . . . . . . . .  D  ADDR  00A9H  NOT USED
+SADDR_0. . . . . . . . . . . . . . .  D  ADDR  00A9H  NOT USED
+SADDR_1. . . . . . . . . . . . . . .  D  ADDR  00AAH  NOT USED
+SADEN. . . . . . . . . . . . . . . .  D  ADDR  00B9H  NOT USED
+SADEN_0. . . . . . . . . . . . . . .  D  ADDR  00B9H  NOT USED
+SADEN_1. . . . . . . . . . . . . . .  D  ADDR  00BAH  NOT USED
+SBUF . . . . . . . . . . . . . . . .  D  ADDR  0099H  NOT USED
+SCON . . . . . . . . . . . . . . . .  D  ADDR  0098H  NOT USED
+SETDISPLAY . . . . . . . . . . . . .  C  ADDR  0050H
+SETR2. . . . . . . . . . . . . . . .  C  ADDR  0441H
+SETR3. . . . . . . . . . . . . . . .  C  ADDR  0462H
+SINT . . . . . . . . . . . . . . . .  C  ADDR  0023H  NOT USED
+SM0. . . . . . . . . . . . . . . . .  B  ADDR  009FH  NOT USED
+SM1. . . . . . . . . . . . . . . . .  B  ADDR  009EH  NOT USED
+SM2. . . . . . . . . . . . . . . . .  B  ADDR  009DH  NOT USED
+SORTEIO_DEZENA . . . . . . . . . . .  C  ADDR  03EDH
+SORTEIO_UNIDADE. . . . . . . . . . .  C  ADDR  0402H
+SP . . . . . . . . . . . . . . . . .  D  ADDR  0081H  NOT USED
+SPCON. . . . . . . . . . . . . . . .  D  ADDR  00C3H  NOT USED
+SPCR . . . . . . . . . . . . . . . .  D  ADDR  00D5H  NOT USED
+SPDAT. . . . . . . . . . . . . . . .  D  ADDR  00C5H  NOT USED
+SPDR . . . . . . . . . . . . . . . .  D  ADDR  0086H  NOT USED
+SPSR . . . . . . . . . . . . . . . .  D  ADDR  00AAH  NOT USED
+SPSTA. . . . . . . . . . . . . . . .  D  ADDR  00C4H  NOT USED
+T0 . . . . . . . . . . . . . . . . .  B  ADDR  00B4H  NOT USED
+T1 . . . . . . . . . . . . . . . . .  B  ADDR  00B5H  NOT USED
+T2CON. . . . . . . . . . . . . . . .  D  ADDR  00C8H  NOT USED
+T2MOD. . . . . . . . . . . . . . . .  D  ADDR  00C9H  NOT USED
+TB8. . . . . . . . . . . . . . . . .  B  ADDR  009BH  NOT USED
+TCLK . . . . . . . . . . . . . . . .  B  ADDR  00CCH  NOT USED
+TCON . . . . . . . . . . . . . . . .  D  ADDR  0088H  NOT USED
+TF0. . . . . . . . . . . . . . . . .  B  ADDR  008DH
+TF1. . . . . . . . . . . . . . . . .  B  ADDR  008FH
+TF2. . . . . . . . . . . . . . . . .  B  ADDR  00CFH
+TH0. . . . . . . . . . . . . . . . .  D  ADDR  008CH
+TH1. . . . . . . . . . . . . . . . .  D  ADDR  008DH
+TH2. . . . . . . . . . . . . . . . .  D  ADDR  00CDH
+TI . . . . . . . . . . . . . . . . .  B  ADDR  0099H  NOT USED
+TIMER0 . . . . . . . . . . . . . . .  C  ADDR  000BH  NOT USED
+TIMER1 . . . . . . . . . . . . . . .  C  ADDR  001BH  NOT USED
+TIMER2 . . . . . . . . . . . . . . .  C  ADDR  002BH  NOT USED
+TL0. . . . . . . . . . . . . . . . .  D  ADDR  008AH
+TL1. . . . . . . . . . . . . . . . .  D  ADDR  008BH
+TL2. . . . . . . . . . . . . . . . .  D  ADDR  00CCH
+TMOD . . . . . . . . . . . . . . . .  D  ADDR  0089H
+TR0. . . . . . . . . . . . . . . . .  B  ADDR  008CH
+TR1. . . . . . . . . . . . . . . . .  B  ADDR  008EH
+TR2. . . . . . . . . . . . . . . . .  B  ADDR  00CAH
+TXD. . . . . . . . . . . . . . . . .  B  ADDR  00B1H  NOT USED
+WDTCON . . . . . . . . . . . . . . .  D  ADDR  00A7H  NOT USED
+WDTPRG . . . . . . . . . . . . . . .  D  ADDR  00A7H  NOT USED
+WDTRST . . . . . . . . . . . . . . .  D  ADDR  00A6H  NOT USED
+WR . . . . . . . . . . . . . . . . .  B  ADDR  00B6H  NOT USED
+ZERO . . . . . . . . . . . . . . . .  C  ADDR  033EH  NOT USED

@@ -1,3 +1,2 @@
-# Eng-Tele
-
-Repositório destinado ao Curso de Engenharia de Telecomunicações 
+# Eng-Telecom
+Repositório destinado ao curso de engenharia de telecomunicações IFCS Campus São José

@@ -1,0 +1,5 @@
+# MCU 8051 IDE: Virtual HW component configuration file
+# Project: Projeto01
+# Component: LCD display
+
+LcdHD44780 {2 16 {} {8 2 4 2 0 0 10 2 9 2 5 2 1 0 6 2 2 0 7 2 3 2} {8 5 4 1 0 2 10 7 9 6 5 2 1 1 6 3 2 0 7 4 3 0} {} 1 1 0 0 0 0 1x1+0+0 withdrawn {0 {}} {0 {}} 1 1}

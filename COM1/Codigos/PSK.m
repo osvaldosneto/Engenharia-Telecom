@@ -1,0 +1,1 @@
+clear allclose allclcM = 4;SNR = 0;info = randint(1,5,M);%info_mod = exp(j*2*pi*info/M);info_mod = pskmod(info, M);info_rec = awgn(info_mod, SNR);scatterplot(info_rec)info_det = pskdemod(info_rec, M);fases_tx = angle(info_mod)*180/pifases_rx = angle(info_rec)*180/pi
